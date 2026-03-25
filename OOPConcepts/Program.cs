@@ -5,19 +5,20 @@
         try
         {
             IAccountRepository repo = new AccountRepository();
-            ITransaction ts = new TransactionService(repo);
+            TransactionService ts = new TransactionService(repo);
 
             Address add = new Address { City = "Ahmedabad", State = "Gujarat" };
 
             Customer c = new Customer { Name = "Milan", Address = add };
 
+            //Displays the details of Customer.
             c.GetDetails();
             Console.WriteLine();
 
             BankAccount SavingsAcc1 = new SavingsAccount("ACC101", c);
             BankAccount currentAcc2 = new CurrentAccount("ACC102", c);
 
-            // Assign bank accounts to customers
+            // Add(Assign) bank accounts to customers
             c.Accounts.Add(SavingsAcc1);
             c.Accounts.Add(currentAcc2);
 
@@ -32,7 +33,8 @@
             Console.WriteLine("Transfer:");
             ts.Transfer(SavingsAcc1, currentAcc2, 1000);
 
-            ts.Transfer(SavingsAcc1, currentAcc2, -500); //error
+            //error : Shows invalid amount
+            ts.Transfer(SavingsAcc1, currentAcc2, -500); 
 
             Console.WriteLine($"Savings Balance: {SavingsAcc1.Balance}");
             Console.WriteLine($"Current Balance: {currentAcc2.Balance}");
@@ -40,13 +42,15 @@
             SavingsAcc1.CalculateInterest();
             currentAcc2.CalculateInterest();
         }
-        catch (InsufficientBalanceException ex)
+        catch (InsufficientBalanceException e)
         {
-            Console.WriteLine(ex.Message);
+            // catch the exception if required amount is greater then balance. 
+            Console.WriteLine(e.Message);
         }
-        catch (InvalidAmountException ex)
+        catch (InvalidAmountException e)
         {
-            Console.WriteLine(ex.Message);
+            // catch the exception if invalid(zero or negative) amount is inserted.
+            Console.WriteLine(e.Message);
         }
         catch (Exception ex)
         {
